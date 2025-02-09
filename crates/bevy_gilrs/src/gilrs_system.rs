@@ -73,11 +73,13 @@ pub fn gilrs_event_system(
                 connection_events.send(event);
             }
             EventType::Disconnected => {
-                let gamepad = gamepads
+                let Some(gamepad) = gamepads
                     .id_to_entity
                     .get(&gilrs_event.id)
-                    .copied()
-                    .expect("mapping should exist from connection");
+                    .copied() else {
+                    tracing::error!("mapping should exist from connection");
+                    continue;
+                };
                 let event = GamepadConnectionEvent::new(gamepad, GamepadConnection::Disconnected);
                 events.send(event.clone().into());
                 connection_events.send(event);
