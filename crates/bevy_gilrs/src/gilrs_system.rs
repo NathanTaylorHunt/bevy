@@ -11,6 +11,7 @@ use bevy_input::gamepad::{
     GamepadConnection, GamepadConnectionEvent, RawGamepadAxisChangedEvent,
     RawGamepadButtonChangedEvent, RawGamepadEvent,
 };
+use bevy_utils::tracing::trace;
 use gilrs::{ev::filter::axis_dpad_to_button, EventType, Filter};
 
 pub fn gilrs_event_startup_system(
@@ -73,11 +74,13 @@ pub fn gilrs_event_system(
                 connection_events.send(event);
             }
             EventType::Disconnected => {
-                let gamepad = gamepads
+                let Some(gamepad) = gamepads
                     .id_to_entity
                     .get(&gilrs_event.id)
-                    .copied()
-                    .expect("mapping should exist from connection");
+                    .copied() else {
+                    crate::error!("mapping should exist from connection");
+                    continue;
+                };
                 let event = GamepadConnectionEvent::new(gamepad, GamepadConnection::Disconnected);
                 events.send(event.clone().into());
                 connection_events.send(event);
