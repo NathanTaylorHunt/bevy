@@ -11,7 +11,6 @@ use bevy_input::gamepad::{
     GamepadConnection, GamepadConnectionEvent, RawGamepadAxisChangedEvent,
     RawGamepadButtonChangedEvent, RawGamepadEvent,
 };
-use bevy_utils::tracing::trace;
 use gilrs::{ev::filter::axis_dpad_to_button, EventType, Filter};
 
 pub fn gilrs_event_startup_system(
@@ -89,11 +88,13 @@ pub fn gilrs_event_system(
                 let Some(button) = convert_button(gilrs_button) else {
                     continue;
                 };
-                let gamepad = gamepads
+                let Some(gamepad) = gamepads
                     .id_to_entity
                     .get(&gilrs_event.id)
-                    .copied()
-                    .expect("mapping should exist from connection");
+                    .copied() else {
+                    crate::error!("mapping should exist from connection");
+                    continue;
+                };
                 events.send(RawGamepadButtonChangedEvent::new(gamepad, button, raw_value).into());
                 button_events.send(RawGamepadButtonChangedEvent::new(
                     gamepad, button, raw_value,
@@ -103,11 +104,13 @@ pub fn gilrs_event_system(
                 let Some(axis) = convert_axis(gilrs_axis) else {
                     continue;
                 };
-                let gamepad = gamepads
+                let Some(gamepad) = gamepads
                     .id_to_entity
                     .get(&gilrs_event.id)
-                    .copied()
-                    .expect("mapping should exist from connection");
+                    .copied() else {
+                    crate::error!("mapping should exist from connection");
+                    continue;
+                };
                 events.send(RawGamepadAxisChangedEvent::new(gamepad, axis, raw_value).into());
                 axis_event.send(RawGamepadAxisChangedEvent::new(gamepad, axis, raw_value));
             }
