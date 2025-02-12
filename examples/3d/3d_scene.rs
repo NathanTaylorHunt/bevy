@@ -1,10 +1,17 @@
 //! A simple 3D scene with light shining over a cube sitting on a plane.
 
 use bevy::prelude::*;
+use bevy::{log::LogPlugin, prelude::*, render::{settings::{Backends, RenderCreation, WgpuSettings}, RenderPlugin}};
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(RenderPlugin {
+            render_creation: RenderCreation::Automatic(WgpuSettings {
+                backends: Some(Backends::VULKAN),
+                ..default()
+            }),
+            ..default()
+        }))
         .add_systems(Startup, setup)
         .run();
 }
