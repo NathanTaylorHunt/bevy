@@ -10,11 +10,11 @@ keywords = ["bevy"]
 
 [dependencies]
 # bevy
-bevy_app = { path = "../bevy_app", version = "0.15.2" }
-bevy_ecs = { path = "../bevy_ecs", version = "0.15.2" }
-bevy_input = { path = "../bevy_input", version = "0.15.2" }
-bevy_utils = { path = "../bevy_utils", version = "0.15.2" }
-bevy_time = { path = "../bevy_time", version = "0.15.2" }
+bevy_app = { path = "../bevy_app", version = "0.15.3" }
+bevy_ecs = { path = "../bevy_ecs", version = "0.15.3" }
+bevy_input = { path = "../bevy_input", version = "0.15.3" }
+bevy_utils = { path = "../bevy_utils", version = "0.15.3" }
+bevy_time = { path = "../bevy_time", version = "0.15.3" }
 
 # other
 gilrs = { version = "0.11.0", default-features = false, features = ["xinput"] }
